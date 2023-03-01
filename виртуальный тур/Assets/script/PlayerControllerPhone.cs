@@ -9,17 +9,25 @@ public class PlayerControllerPhone : MonoBehaviour
     public Rigidbody _rigidbody;
     public FixedJoystick _joystickMove;
     public Transform camera;
-
     public float _moveSpeed;
 
-    private void Start() {
-        camera = Camera.main.transform;
+    private void Start()
+    {
+        camera = Camera.main!.transform;
     }
 
-    private void FixedUpdate() {
-        _rigidbody.AddRelativeForce(_joystickMove.Horizontal * _moveSpeed, 0, _joystickMove.Vertical * _moveSpeed);
-        
-        transform.rotation = new Quaternion (0f, camera.rotation.y,0f,0f);
+    private void FixedUpdate()
+    {
+        Move();
     }
 
+    private void Move()
+    {
+        var move = new Vector3(_joystickMove.Horizontal, 0, _joystickMove.Vertical);
+
+        _rigidbody.AddRelativeForce(move * (50f * Time.deltaTime), ForceMode.VelocityChange);
+
+        if (_rigidbody.velocity.magnitude > _moveSpeed)
+            _rigidbody.velocity = _rigidbody.velocity.normalized * _moveSpeed;
+    }
 }
